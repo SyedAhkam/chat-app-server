@@ -1,15 +1,19 @@
+const express = require('express');
+const http = require('http');
 const Websocket = require('ws');
-const uuid = require('uuid');
+const uuid = require('uuid').v4;
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080;
+
+const app = express();
+
+const server = http.createServer(app);
 
 // list of users
 var CLIENTS=[];
 var id;
 
-const wss = new Websocket.Server({
-  port: PORT
-})
+const wss = new Websocket.Server({server})
 
 wss.on('connection', function connection(ws) {
   client_id = uuid();
@@ -50,4 +54,6 @@ function broadcast_msg(message) {
   }
 }
 
-console.log(`Server running on ${PORT}`)
+server.listen(PORT, () => {
+	console.log(`Server started at ${PORT}`);
+})
